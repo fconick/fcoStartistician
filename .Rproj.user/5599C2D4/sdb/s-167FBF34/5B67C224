@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "#=============================================================================\n#                               Builidng the dataset\n#=============================================================================\n\nlibrary(magrittr)\nlibrary(stringr)\noptions(stringsAsFactors = F)\n\n#1.- Get the dataset needed for the post and save it in the folder\n\nLaLiga_stats <- read.csv('~/LIGA MX ESPN DATA/ESPNLaLiga_STATS.csv') %>% \n  subset(Var%in%c('Posesion', 'Tiros a gol', 'Goles'))\nPremier_stats <- read.csv('~/LIGA MX ESPN DATA/ESPNEng_STATS.csv') %>% \n  subset(Var%in%c('Posesion', 'Tiros a gol', 'Goles')) \n\n#Add a column for each league\nLaLiga_stats$League <- 'La Liga'\nPremier_stats$League <- 'Premier League'\n\nSTATS <- rbind(LaLiga_stats, Premier_stats)%>% unique\n\n#Recode the variables\nSTATS$Var[STATS$Var=='Posesion'] <- 'Posession'\nSTATS$Var[STATS$Var=='Tiros a gol'] <- 'Shots'\nSTATS$Var[STATS$Var=='Goles'] <- 'Goals'\n\ndir.create('Possesion_post')\n\nwrite.csv(STATS,'Possesion_post/Dataset.csv', row.names=F) \n\n",
+    "created" : 1490325870695.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "1035926103",
+    "id" : "5B67C224",
+    "lastKnownWriteTime" : 7226435094589303907,
+    "last_content_update" : 1490482757369,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
