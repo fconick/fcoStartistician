@@ -1,0 +1,68 @@
+---
+title: "PSA Ranking equivalent"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+source('C://Users/fco_n/Desktop/Ranking.R')
+```
+
+<img src='https://upload.wikimedia.org/wikipedia/en/8/8e/Logo_of_PSA_2015.jpg' width = '200'>
+
+## Summary
+
+The goal is to compare the PSA Rankings between men and women, and establish equivalent rankings between one another.
+
+
+##Description of the analysis 
+
+
+There are `r dim(RANK_WOMEN)[1]` women and `r dim(RANK_MEN)[1]` men in each ranking, although not all of them are active or actual competitive players. 
+
+To perform this analysis I deleted all the players that have no points and less than 2 tournaments played. This leave the rankings with `r dim(subset(RANK_Clean, Gender=="WOMEN"))[1]`women  and `r dim(subset(RANK_Clean, Gender=="MEN"))[1]` men, almost twice the amount of men than women.
+
+Since the points determine your ranking, the number of tournaments played by a player will increase the chances of having a better ranking no matter how good they are. 
+
+The following plot compare the Ranking vs Number of tournaments played per gender. 
+
+```{r cars}
+plot(plot.1)
+```
+
+The next plot helps to compare the rankings according to the tournaments played. 
+
+```{r cars1}
+plot(plot.g)
+```
+
+For example if you are a woman and played 5 tournaments your expected ranking would be around 150, while for a man would be around 330.
+
+PSA calculates the Average points differently for men and women. Using a divisor of 8 for women and 10 for men. There are 2 main reasons for it,
+
+* There are less women in the ranking and less tournaments  
+* There are more amount of points  in play for the men tour
+
+
+```{r plotr}
+plot(plot.r)
+```
+
+The previous plot shows that to be around top 10 in the world despite the gender you have to play 2 tournaments more than the divisor established. This is because if you play 13 for men or 11 for women, the divisor grows by one unit and that starts to hurt your average.
+
+Given the PSA rules and the evidence of the plot the optimal amount of tournaments for men is 12 and women is 10.
+
+#Table for comparison
+
+After doing the analysis this is a table that could help to compare the rankings,  it's almost 2 to 1. 
+
+```{r cars2}
+library(knitr)
+kable(Eq)
+```
+
+The last chart shows how this ranking comparison looks like. 
+
+```{r cars11}
+plot(plot.f)
+```
