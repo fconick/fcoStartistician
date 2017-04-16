@@ -77,7 +77,7 @@ ggplot(data=Pos_vs_Shots, aes(x = Posession_H, y = Shots_H )) +
   ggtitle( 'Home team \n Posession vs Shots')+
   theme(plot.title = element_text(hjust = 0.5)) 
     
-#6.- Visualization between Posession and Goal difference ----------------------
+eam #6.- Visualization between Posession and Goal difference ----------------------
 
 
 Pos_vs_ShotDif <- ddply(DATA[,c('Posession_H', 'Shots_H', 'Shots_A')], 
@@ -97,8 +97,9 @@ ggplot(data=Pos_vs_ShotDif, aes(x = Posession_H, y = Shot_Dif )) +
 
 DATA$Pos_simp <- DATA$Posession_H - 50
 
-lm(data=DATA, formula = (Shots_H - Shots_A)~ Pos_simp) %>% summary
+lm(data=DATA, formula = (Shots_H - Shots_A)~ Pos_simp ) %>% summary
 
+lm(data =DATA, formula = Result~Shots_H + Shots_A) %>%  summary
 
 #Analysis by Win tie or lose
 DATA$WTL <- 'Win'
@@ -113,7 +114,8 @@ colnames(Pos_vs_Shots_Res)[2] <- 'Shot_Dif'
 ggplot(data=DATA, aes(x = Posession_H, y = Shots_H - Shots_A )) +
   geom_point(data = Pos_vs_ShotDif, aes(x = Posession_H, y = Shot_Dif, alpha=V1)) + 
   geom_smooth(aes(group=WTL, , color = WTL)) +
-  labs(x='Posession (%)', y = 'Shots on goal \n difference', color= 'Result')+
+  labs(x='Posession (%)', y = 'Shots on goal \n difference', color= 'Result',
+       alpha = 'No. Obs')+
   ggtitle( 'Home team \n Posession vs Shot Difference')+ 
   theme(plot.title = element_text(hjust = 0.5)) +
-  scale_fill_manual(values=c( "#E69F00", "#56B4E9", "#009E73"))
+  scale_color_manual(values=c( "#E69F00", "#56B4E9", "#009E73"))
