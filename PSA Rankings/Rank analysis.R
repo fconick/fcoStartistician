@@ -259,3 +259,14 @@ W.c <- lm(Tournaments~ 0 + Rank.Inv, Obs.W)$coefficients
 M.c <- lm(Tournaments~ 0 + Rank.Inv, Obs.M)$coefficients
 
 Tournamnet.Rel <- 1 - W.c/M.c
+
+#
+
+library(png)
+library(grid)
+img <- readPNG('https://upload.wikimedia.org/wikipedia/en/8/8e/Logo_of_PSA_2015.jpg')
+g <- rasterGrob(img, interpolate=TRUE)
+
+qplot(1:10, 1:10, geom="blank") +
+  annotation_custom(g, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+  geom_point()
