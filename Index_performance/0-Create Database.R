@@ -52,12 +52,14 @@ colnames(Attributes_Opp) [-c(1:2)]<- paste0(colnames(Attributes_Opp) [-c(1:2)],
 STATS %<>% left_join(Attributes_Opp, by = c('id', 'variable')) %>% 
   select(-id, -Posession_Opp)
 
-STATS %<>% mutate(variable = ifelse(variable=='Home', 'Away', 'Home')) 
+STATS %<>% mutate(variable = ifelse(variable=='Home', 'Away', 'Home') #,
+                  #Posession = Posession - 50
+                  ) 
 
 
 
 #create a dir for the post
 
-dir.create('Index_performance')
+#dir.create('Index_performance')
 
 write.csv(STATS, 'Index_performance/DATABASE.csv', row.names=F)
