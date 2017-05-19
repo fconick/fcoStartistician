@@ -2,10 +2,10 @@
 #                   Create an index according to performance
 #=============================================================================
 
-cbPalette <- c( "#E69F00", "#56B4E9", "#009E73", "#F0E442",
-               "#0072B2", "#D55E00", "#CC79A7")
+cbPalette <- c("#0072B2", "#D55E00")
 
-
+library(zoo)
+library(plyr)
 library(magrittr)
 library(stringr)
 library(tidyverse)
@@ -30,14 +30,14 @@ Princomp <- princomp(STATS[,-c(1:4)], cor = T)
 plot(Princomp)
 
 #Biplot
-biplot(Princomp)
+#biplot(Princomp, col =c('white', 'red'), cex = .5)
 
 
 #Loadings
 (Loadings <- Princomp$loadings[,1:2] %>% round(2) %>% data.frame %>% 
-  mutate(Attribute = rownames(.)) %>% 
-  select(Attribute, everything()) %>% 
-  arrange(Comp.1))
+    mutate(Attribute = rownames(.)) %>% 
+    select(Attribute, everything()) %>% 
+    arrange(Comp.2))
 
 
 #Scores 2 component add it to DATA
@@ -62,22 +62,22 @@ ggplot(data= STATS, aes(y = PC1, x = reorder(Team, PC1, FUN = median),  color = 
 #Index of the best teams from 2011 to 2016 with more than 40 matches in the DB
 STATS  %>% 
   group_by(Team) %>% filter(n()>30) %>%   summarise(
-  Index.1 = mean(PC1),
-  Index.2 = mean(PC2)
-) %>% arrange(desc(Index.2)) %>% data.frame
+    Index.1 = mean(PC1),
+    Index.2 = mean(PC2)
+  ) %>% arrange(desc(Index.1)) %>% data.frame
 
 
-# Missing to add a moving average so the index can determine the "current INdex'
+#add a moving average so the index can determine the "current INdex'
 # of each Team
 
 
 STATS %<>% group_by(Team) %>%  filter(n()>30) %>%
   arrange(Date) %>% 
   mutate(
-  M.A.PC1 = rollmeanr(PC1, 15, fill = NA ),
-  M.A.PC2 = rollmeanr(PC2, 15, fill = NA )
-)
-  
+    M.A.PC1 = rollmeanr(PC1, 15, fill = NA ),
+    M.A.PC2 = rollmeanr(PC2, 15, fill = NA )
+  )
+
 #Plot time series of the Index by teams
 ggplot(data= STATS, aes(x= Date )) + 
   geom_hline(yintercept= 0, colour ='red', size = .1) +
@@ -102,7 +102,7 @@ ggplot(STATS, aes(y = PC1, group = Goals - Goals_Opp, x = Goals - Goals_Opp)) +
 ggplot(data = STATS, aes(y = PC2, x = PC1)) + 
   geom_point(aes(color = Goals - Goals_Opp))  +
   scale_colour_gradient(low = 'white', high = 'red')
-  
+
 ggplot(data = STATS, aes(y = Goals, x =  PC1)) + 
   geom_jitter() +
   geom_smooth()
@@ -123,11 +123,10 @@ ggplot(Index.2016, aes(x = M.A.PC1, y = M.A.PC2, color = League)) +
             show.legend = F)
 
 
+Fouls.cols <- grep('Faltas|Tarjetas',colnames(STATS), value = T)
+
 #Why one league is divided by PC.2
 
-STATS %>% group_by(League) %>% 
-  summarise(
-    Faltas.avg = mean(Faltas), 
-    Amarillas.Avg = mean(Tarjetas.Amarillas),
-    Rojas.Avg = mean(Tarjetas.Rojas)
-  )
+Fouls.summary <- STATS %>% ddply(.(League), function(x){
+  sapply(x[,c(Fouls.cols, 'PC2')], mean)
+})
