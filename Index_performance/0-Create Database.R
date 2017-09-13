@@ -57,7 +57,13 @@ STATS %<>% mutate(variable = ifelse(variable=='Home', 'Away', 'Home') #,
                   ) 
 
 
+colnames(STATS)[-c(1:4, 14:21)] <- c('Fouls', 'Offsides', 'Goals', 'Possession', 'Saves',
+                              'Shots', 'Yellow Cards', 'Red Cards', 
+                              'Corner kicks')
 
+colnames(STATS)[14:21] <- c('Fouls_Opp', 'Offsides_Opp', 'Goals_Opp', 'Saves_Opp',
+                            'Shots_Opp', 'Yellow Cards_Opp', 'Red Cards_Opp', 
+                            'Corner kicks_Opp')
 #create a dir for the post
 
 #dir.create('Index_performance')
