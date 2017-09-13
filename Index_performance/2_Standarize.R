@@ -3,8 +3,13 @@
 #=============================================================================
 
 #Load libraries
+<<<<<<< HEAD
 libraries <- c('plyr','zoo', 'magrittr', 'stringr', 'tidyverse', 'ggplot2',
                'forecast', 'lubridate')
+=======
+libraries <- c('plyr','zoo', 'magrittr', 'stringr', 'tidyverse', 'ggplot', 'forecast',
+               'lubridate')
+>>>>>>> origin/master
 
 lapply(libraries,require, character.only = TRUE )
 
@@ -25,7 +30,11 @@ STATS$Date %<>%  as.Date
 STATS %<>% filter(variable == 'Home')
 
 
+<<<<<<< HEAD
 Fouls.cols <- grep('Fouls|Cards',colnames(STATS), value = T)
+=======
+Fouls.cols <- grep('Faltas|Tarjetas',colnames(STATS), value = T)
+>>>>>>> origin/master
 
 #Why one league is divided by PC.2
 
@@ -40,7 +49,11 @@ scale.data.frame <- function(x){
 
 #Standarize  all variables related with fouls  
 STATS %<>% group_by(League) %>% 
+<<<<<<< HEAD
   mutate_each(funs(scale.data.frame), contains("Fouls"), contains('Cards'))
+=======
+  mutate_each(funs(scale.data.frame), contains("Faltas"), contains('Tarje'))
+>>>>>>> origin/master
 
 #Principal components
 Princomp <- princomp(STATS[,-c(1:4)], cor = T)
@@ -60,8 +73,13 @@ biplot(Princomp)
 
 
 #Scores 2 component add it to DATA
+<<<<<<< HEAD
 STATS$PC1<- -Princomp$scores[,1]
 STATS$PC2<- -Princomp$scores[,2]
+=======
+STATS$PC1<- Princomp$scores[,1]
+STATS$PC2<- Princomp$scores[,2]
+>>>>>>> origin/master
 
 #Index of the best teams from 2011 to 2016 with more than 40 matches in the DB
 STATS  %>% 
@@ -86,6 +104,7 @@ Index.2016 <- STATS %>% group_by(Team) %>%
   filter(Date == max(Date)) %>% 
   select(Team, M.A.PC1, M.A.PC2, Date, League) %>% filter(Date>= as.Date('2016-11-01'))
 
+<<<<<<< HEAD
 
 ggplot(Index.2016, aes(x = M.A.PC1, y = M.A.PC2, color = League)) +
   geom_hline(aes(yintercept=mean(M.A.PC2)), colour = 'black', linetype = 2) +
@@ -100,4 +119,16 @@ ggplot(Index.2016, aes(x = M.A.PC1, y = M.A.PC2, color = League)) +
   #geom_smooth(method = 'gam', se = T, alpha = .2)
 
 ggsave('Index_performance/Index_Teams_div.png')
+=======
+ggplot(Index.2016, aes(x = M.A.PC1, y = M.A.PC2, color = League)) +
+  geom_point(show.legend = F) +
+  geom_text(aes(label = Team), check_overlap = T, nudge_y = 0.08,
+            show.legend = F, size =2.5)+
+  scale_color_manual(values=cbPalette) +
+  labs(x = 'General Performance', y = 'Fouls and Misconduct Scores', 
+       title = 'Teams January 2017 scores') +
+  theme(plot.title = element_text(hjust = 0.5))#+
+  #geom_smooth(method = 'gam', se = T, alpha = .2)
+
+>>>>>>> origin/master
 

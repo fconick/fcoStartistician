@@ -1,14 +1,26 @@
 {
     "left" : {
+<<<<<<< HEAD
         "panelheight" : 757,
         "splitterpos" : 313,
+=======
+        "panelheight" : 782,
+        "splitterpos" : 324,
+>>>>>>> origin/master
         "topwindowstate" : "MAXIMIZE",
-        "windowheight" : 796
+        "windowheight" : 821
     },
     "right" : {
+<<<<<<< HEAD
         "panelheight" : 757,
         "splitterpos" : 364,
         "topwindowstate" : "MAXIMIZE",
         "windowheight" : 796
+=======
+        "panelheight" : 782,
+        "splitterpos" : 377,
+        "topwindowstate" : "NORMAL",
+        "windowheight" : 821
+>>>>>>> origin/master
     }
 }

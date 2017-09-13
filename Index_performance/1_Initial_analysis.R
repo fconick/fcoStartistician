@@ -2,6 +2,7 @@
 #                   Create an index according to performance
 #=============================================================================
 
+<<<<<<< HEAD
 #Load libraries
 libraries <- c('plyr','zoo', 'magrittr', 'stringr', 'tidyverse', 'ggplot2', 
                'forecast', 'lubridate')
@@ -9,6 +10,17 @@ libraries <- c('plyr','zoo', 'magrittr', 'stringr', 'tidyverse', 'ggplot2',
 lapply(libraries,require, character.only = TRUE )
 
 #Define plotting and data importing specifications
+=======
+cbPalette <- c("#0072B2", "#D55E00")
+
+library(zoo)
+library(plyr)
+library(magrittr)
+library(stringr)
+library(tidyverse)
+library(ggplot2)
+require(forecast)
+>>>>>>> origin/master
 options(stringsAsFactors = F)
 
 theme_set(theme_minimal())
@@ -36,7 +48,11 @@ Princomp <- princomp(STATS[,-c(1:4)], cor = T )
 plot(Princomp)
 
 #Biplot
+<<<<<<< HEAD
 biplot(Princomp, col =c('white', 'red'), cex = 1)
+=======
+#biplot(Princomp, col =c('white', 'red'), cex = .5)
+>>>>>>> origin/master
 
 
 #Loadings
@@ -81,9 +97,13 @@ STATS  %>%
   group_by(Team) %>% filter(n()>30) %>%   summarise(
     Index.1 = mean(PC1),
     Index.2 = mean(PC2)
+<<<<<<< HEAD
   ) %>% arrange(desc(Index.1)) %>%
   select(Team, Index.1) %>%
   data.frame %>% write.csv(row.names =F)
+=======
+  ) %>% arrange(desc(Index.1)) %>% data.frame
+>>>>>>> origin/master
 
 
 #add a moving average so the index can determine the "current INdex'
@@ -118,10 +138,16 @@ AVG_PC1 <- STATS %>% group_by(Dif = Goals - Goals_Opp) %>%
 ggplot(STATS, aes(y = PC1, group = Goals - Goals_Opp, x = Goals - Goals_Opp)) +
   geom_boxplot()
 
+<<<<<<< HEAD
 ggplot(data = subset(STATS,abs(Goals-Goals_Opp)>3), aes(y = PC2, x = PC1)) + 
   geom_jitter(aes(color = Goals - Goals_Opp))  +
   scale_colour_gradient(low = 'green', high = 'red') +
   facet_wrap(~(Goals-Goals_Opp))
+=======
+ggplot(data = STATS, aes(y = PC2, x = PC1)) + 
+  geom_point(aes(color = Goals - Goals_Opp))  +
+  scale_colour_gradient(low = 'white', high = 'red')
+>>>>>>> origin/master
 
 ggplot(data = STATS, aes(y = Goals, x =  PC1)) + 
   geom_jitter() +
@@ -146,6 +172,7 @@ ggplot(Index.2016, aes(x = M.A.PC1, y = M.A.PC2, color = League)) +
   labs(x = 'PC1', y = 'PC2')
 
 
+<<<<<<< HEAD
 Fouls.cols <- grep('Fouls|Cards',colnames(STATS), value = T)
 
 #Why one league is divided by PC.2
@@ -175,3 +202,12 @@ ggplot(Index.2016, aes(x = M.A.PC1, y = M.A.PC2, color = League)) +
   labs(x = 'General Performance', y = 'Fouls and Misconduct Scores', 
        title = 'Teams January 2017 scores') +
   theme(plot.title = element_text(hjust = 0.5))
+=======
+Fouls.cols <- grep('Faltas|Tarjetas',colnames(STATS), value = T)
+
+#Why one league is divided by PC.2
+
+Fouls.summary <- STATS %>% ddply(.(League), function(x){
+  sapply(x[,c(Fouls.cols, 'PC2')], mean)
+})
+>>>>>>> origin/master
