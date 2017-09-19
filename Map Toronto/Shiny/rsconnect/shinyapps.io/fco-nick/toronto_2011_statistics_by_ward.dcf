@@ -1,0 +1,11 @@
+name: toronto_2011_statistics_by_ward
+title: Toronto 2011 Statistics by Ward
+account: fco-nick
+server: shinyapps.io
+appId: 216513
+bundleId: 988236
+url: https://fco-nick.shinyapps.io/toronto_2011_statistics_by_ward/
+when: 1505846195.68479
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: 1_Creating objects/_1_1_cleaning_stats.R|1_Creating objects/_1_2_Attributes_lables.R|1_Creating objects/_traffic data.R|1_Creating objects/0_Make_map_Robject.R|1_Creating objects/1_Wrangling_stats.R|1_Creating objects/2_Map_dataframe_w_stats.R|1_Creating objects/3_Download_map_background.R|1_Creating objects/4_Map_Labels.R|1_Creating objects/Join_Map_Data.R

@@ -10,29 +10,44 @@
 library(shiny)
 library(ggplot2)
 library(ggmap)
+library(magrittr)
+library(tidyverse)
+library(sp)
 
-Toronto <- readRDS('../Toronto.RDS')
-Map_draw <- readRDS('../Map_draw.RDS')
-cnames <- readRDS('../cnames.RDS')
-Bike_rings <- readRDS('../Bike_rings.RDS')
-Traffic_cameras <- readRDS('../Traffic_cameras.RDS')
+Toronto <- readRDS('Toronto.RDS')
+Attributes <- readRDS('Attributes.RDS')
+cnames <- readRDS('cnames.RDS')
+
+Bike_rings <- readRDS('Bike_rings.RDS')
+Traffic_cameras <- readRDS('Traffic_cameras.RDS')
+
+Map <- readRDS('Map.RDS')
+Data_organized <- readRDS('Data_organized_clean.RDS')
+load(file = 'Join_Map_Data.rda')
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
    
-  output$distPlot <- renderPlot({
-    
-    # generate bins based on input$bins from ui.R
-    x    <- faithful[, 2] 
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    
-    
-    # draw the histogram with the specified number of bins
-    hist(x, breaks = bins, col = 'darkgray', border = 'white')
-    
+  
+  # 2.- Reactive selection for TEAMS
+  output$subAttribute <- renderUI({
+    selectInput("variable", h4("Attribute:"), 
+                choices = Attributes[[input$attrib]])
   })
+ # name_main_attribute <- paste0('`', input$variable1 , '`')
+  
+  
+  Map_draw_reactive <- reactive({
+    
+    return(Join_Map_Data(Map, Data_organized, input$attrib))
+  
+    })
+ 
   
   output$Plot <- renderPlot({
+    
+    
+    Map_draw <- Map_draw_reactive()
     
     ditch_the_axes <- theme(
       axis.text = element_blank(),
@@ -56,21 +71,24 @@ shinyServer(function(input, output) {
         aes(Longitude, Latitude),
         color = 'light blue')} +      
       
-      {if(input$Map) geom_polygon(data = Map_draw,
+      {if(!input$Cameras & !input$Bike) geom_polygon(data = Map_draw,
                    aes_string('long', 'lat', group = 'group', 
-                              fill = input$variable), 
-                   colour = 'gray', alpha =.7)} + 
+                              fill = paste0('`',input$variable,'`') ), 
+                   colour = 'white', alpha =.7)} + 
       geom_text(data =cnames, aes(long, lat, label = New_Name),
-                size =2, check_overlap = TRUE) +
+                size =3, fontface = "bold", check_overlap = F) +
       coord_map() + 
-      scale_fill_gradient(low = 'white', high = input$color) +
+      scale_fill_gradient(low = '#E8F3F8',
+                          high = paste0('dark ', input$color)) +
       
 
       
       
       xlim(c(-79.64,-79.11)) + ylim(c(43.57,43.86)) + 
       labs(fill= paste0(input$variable, ' (%)'), size = 'Post Bikes') +
-      ditch_the_axes
+      ditch_the_axes + theme(legend.position = c(.9, .2),
+                             legend.background = element_rect(
+                               fill ="transparent"))
     
   })
 })

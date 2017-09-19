@@ -7,9 +7,11 @@ library(tmap)
 library(stringr)
 library(ggmap)
 
+
+
 #1.- Read Map data this has to be done only once
- # setwd("Map Toronto/Ward 2/")
- # Map <- readOGR(".","icitw_wgs84")
+
+ #Map <- readOGR("Map Toronto/Ward 2","icitw_wgs84")
  # #Save the data as an R object
  # saveRDS(Map,'Map.RDS')
 
@@ -47,8 +49,11 @@ Map <- readRDS('Map Toronto/Ward 2/Map.RDS')
    
 #5.- Get the data ready to map it
    
+   saveRDS(Map,'Map Toronto/Ward 2/MapInfo.RDS')
+   Map <- readRDS('Map Toronto/Ward 2/MapInfo.RDS')
    #1.- From now on this will be the way to load the map data 
    Map <- readRDS('Map Toronto/Ward 2/Map.RDS')
+   colnames(Map@data)[11] <- 'Population'
    
    #Join
    Map$SCODE_NAME %<>% as.character  %>% as.numeric
@@ -85,7 +90,10 @@ Map <- readRDS('Map Toronto/Ward 2/Map.RDS')
 #6.- Plot the data
    
    #Download the map from goggle maps
-   # Toronto <- get_map(location = c(-79.43, 43.725), zoom=10)
+   Toronto <- get_map(location = c(-79.43, 43.725), zoom=10)
+   
+
+
    #saveRDS(Toronto, 'Map Toronto/Toronto.RDS')
    
    Toronto <- readRDS('Map Toronto/Toronto.RDS')
@@ -102,7 +110,7 @@ Map <- readRDS('Map Toronto/Ward 2/Map.RDS')
    #Plot the map
    ggmap(Toronto, extent = 'normal') +
      geom_polygon(data = Map_draw,
-                  aes(long, lat, group = group,fill = `Multiple responses`), 
+                  aes(long, lat, group = group), 
                   colour = 'gray', alpha =.7) + 
      geom_text(data =cnames, aes(long, lat, label = New_Name),
                size =3, check_overlap = TRUE) +
@@ -112,4 +120,46 @@ Map <- readRDS('Map Toronto/Ward 2/Map.RDS')
      xlim(c(-79.65,-79.10)) + ylim(c(43.55,43.88)) + 
      labs(fill=' ') +
      ditch_the_axes
+   
+   
+   
+  (Plot <-  ggplot() +
+     geom_polygon(data = Map_draw,
+                  aes(long, lat, group =group, fill = Variable),
+                  color = 'gray', aes =.7) +
+     coord_map() + 
+     scale_fill_gradient(low = 'light blue', high = 'dark blue')+
+     labs(fill ="Population") )
+   
+   ggsave('Map Toronto/Example2.png')
+   
+   Background <- get_map(location = c(rowMeans(Map@bbox)), 
+                 maptype = 'terrain',
+                 zoom =10)
+   
+   
+   width <- diff(Map@bbox[1,])
+   heigth <- diff(Map@bbox[2,])
+   
+   plot_area <- ggplot()+xlim( c(Map@bbox[1,1]-(.1*width),
+                              Map@bbox[1,2]+.1*width)) +
+                        ylim(c(Map@bbox[2,1]-(.1*heigth),
+                               Map@bbox[2,2]+.1*heigth))
+   
+   (Plot <- ggmap(Background, extent = 'normal') +
+     geom_polygon(data = Map_draw,
+                  aes(long, lat, group =group, fill = Variable),
+                  color = 'gray', alpha =.7) +
+     coord_map() + 
+     scale_fill_gradient(low = 'light blue', high = 'dark blue')+
+     labs(fill ="Population")  +
+     ditch_the_axes)
+   
+   ggsave('Map Toronto/Example3.png')
+   
+  (Plot + scale_x_continuous(expand = c(-.2,0)) +
+    scale_y_continuous(expand = c(-.24,0)))
+     #ylim(Map@bbox[2,])
+  
+  ggsave('Map Toronto/Example4.png')
    
